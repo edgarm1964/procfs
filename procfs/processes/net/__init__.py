@@ -19,7 +19,10 @@ class dev(ProcessFile):
         for line in lines:
             interface, str_values = line.split(':', 1)
             interface = interface.strip()
-            values = map(int, str_values.split())
+            #
+            # python2 map() returns a list, python3 a map object
+            # convert map object into a list
+            values = list (map(int, str_values.split()))
             rcv = Dict(zip(rcv_keys, values[:limit]))
             tx = Dict(zip(tx_keys, values[limit:]))
             result[interface] = Dict(receive=rcv, transmit=tx)

@@ -109,9 +109,11 @@ class stat(ProcessFile):
         data = Dict(zip(header, data.split()))
         del data['_']
         for key, value in data.items():
-            if key.endswith('time'):
-                data[key] = timedelta(seconds=int(value))
-            elif key not in ('state', 'tcomm'):
+            # because the *time values are in CLK_TCK resolution, they have
+            # to be converted into integers and not a datetime.timedelta object
+            #
+            # keys 'state' and 'tcomm' are strings, the rest integers
+            if key not in ('state', 'tcomm'):
                 data[key] = int(value)
         return data
 

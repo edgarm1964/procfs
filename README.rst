@@ -79,8 +79,3 @@ Links
 * `documentation <http://packages.python.org/procfs/>`_
 * `github <http://github.com/pmuller/procfs>`_
 
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/pmuller/procfs/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-

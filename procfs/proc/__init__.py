@@ -2,6 +2,11 @@ from datetime import datetime, timedelta
 
 from procfs.core import Dict, File
 
+try:
+    from collections.abc import Mapping
+except ImportError as e:
+    from collections import Mapping
+    pass
 
 class cpuinfo(File):
     """/proc/cpuinfo
@@ -129,19 +134,26 @@ class stat(File):
         parsers = {
             'intr': lambda value: self.__parse_list_with_total(value),
             'softirq': lambda value: self.__parse_list_with_total(value),
-            'btime': datetime.fromtimestamp
+            'btime': int # more useful as an integer, orginally: datetime.fromtimestamp
         }
 
-        for key, parser in parsers.iteritems():
+        #
+        # in python3, iteritems() has been renamed into items()
+        for key, parser in parsers.items():
             value = result.get(key)
             if value is not None:
                 result[key] = parser(value)
 
         return result
 
-    def __parse_list_with_total(self, list):
-        total = list.pop(0)
-        result = Dict(zip(xrange(1, len(list) + 1), list))
+    def __parse_list_with_total(self, plist):
+        #
+        # in python3, plist is most likely a map object
+        # check for this and convert into list
+        if isinstance (plist, Mapping):
+            plist = list(plist)
+        total = plist.pop(0)
+        result = Dict(zip(range(1, len(plist) + 1), plist))
         result.total = total
         return result
 
